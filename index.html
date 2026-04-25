@@ -6,9 +6,24 @@
   <title>CAPTCHA</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #f5f5f5; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; }
+    body {
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
 
-    .captcha-box { width: 320px; border: 1px solid #ccc; border-radius: 4px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15); overflow: hidden; }
+    .captcha-box {
+      width: 320px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
 
     .captcha-header { background: #4a90d9; padding: 14px 16px 12px; color: white; }
     .captcha-header .select-label { font-size: 12px; opacity: 0.9; margin-bottom: 2px; }
@@ -16,15 +31,15 @@
     .captcha-header .sub-label { font-size: 12px; opacity: 0.85; }
 
     .grid-container { position: relative; width: 320px; height: 320px; background: #bbb; }
-    #bg-img { width: 320px; height: 320px; object-fit: cover; display: none; position: absolute; top:0; left:0; }
-    #placeholder-bg { position: absolute; top:0;left:0;width:320px;height:320px; display:flex;align-items:center;justify-content:center; background:#ccc; }
-    .grid-overlay { position: absolute; top:0;left:0;width:320px;height:320px; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); }
+    #bg-img { width: 320px; height: 320px; object-fit: cover; display: block; position: absolute; top:0; left:0; }
+    .grid-overlay { position: absolute; top:0; left:0; width:320px; height:320px; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); }
 
     .grid-cell { border: 1px solid rgba(255,255,255,0.5); position:relative; cursor:pointer; }
     .grid-cell:hover { background: rgba(255,255,255,0.1); }
     .grid-cell.selected { background: rgba(74,144,217,0.45); }
     .grid-cell.selected::after { content:''; position:absolute; inset:0; border:3px solid #4a90d9; pointer-events:none; }
     .grid-cell.flash { background: rgba(255,255,255,0.3) !important; }
+
     .checkmark { display:none; position:absolute; bottom:4px; right:4px; width:22px; height:22px; background:#4a90d9; border-radius:50%; align-items:center; justify-content:center; }
     .checkmark svg { width:13px; height:13px; }
     .grid-cell.selected .checkmark { display:flex; }
@@ -40,31 +55,6 @@
     #msg-box { width:320px; margin-top:6px; padding:10px 14px; border-radius:4px; font-size:13px; display:none; }
     #msg-box.success { background:#e6f4ea; color:#1e7e34; border:1px solid #93d6a2; }
     #msg-box.error { background:#fce8e6; color:#c5221f; border:1px solid #f5a9a7; }
-
-    /* CONFIG PANEL */
-    .config-section { border-top: 1px solid #e0e0e0; background: #f4f8fd; }
-    .config-toggle { width:100%; background:none; border:none; padding:10px 14px; font-size:12px; color:#4a90d9; font-weight:700; cursor:pointer; text-align:left; font-family:Arial,sans-serif; letter-spacing:0.3px; }
-    .config-toggle:hover { background:#e8f2fc; }
-    .config-inner { padding: 12px 14px; display:none; }
-    .config-inner.open { display:block; }
-    .cfg-row { display:flex; gap:6px; align-items:center; margin-bottom:8px; flex-wrap: wrap; }
-    .cfg-row label { min-width:72px; color:#666; font-size:11px; flex-shrink:0; }
-    .cfg-row input[type=text] { flex:1; padding:5px 8px; border:1px solid #ccc; border-radius:3px; font-size:11px; font-family:Arial,sans-serif; min-width:0; }
-    input[type=file] { display:none; }
-    .upload-btn-sm { padding:4px 10px; border:1px solid #ccc; border-radius:3px; background:#fff; font-size:11px; cursor:pointer; white-space:nowrap; }
-    .upload-btn-sm:hover { background:#f0f0f0; }
-    .cfg-hint { font-size:10px; color:#999; margin-bottom:8px; line-height:1.4; }
-    .admin-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin-bottom:8px; }
-    .admin-cell { aspect-ratio:1; border:2px solid #ddd; border-radius:3px; cursor:pointer; position:relative; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; }
-    .admin-cell:hover { background:#f0f0f0; }
-    .admin-cell.correct { border-color:#4a90d9; background:#e8f4fd; }
-    .admin-cell .c-badge { display:none; position:absolute; top:1px; right:1px; width:12px; height:12px; background:#4a90d9; border-radius:50%; font-size:8px; color:white; align-items:center; justify-content:center; }
-    .admin-cell.correct .c-badge { display:flex; }
-    .admin-cell .adm-name { font-size:7px; font-weight:700; text-align:center; line-height:1.2; }
-    .admin-cell .adm-num { font-size:8px; color:#bbb; }
-    .btn-apply { width:100%; padding:7px; background:#4a90d9; color:white; border:none; border-radius:3px; font-size:12px; font-weight:700; cursor:pointer; }
-    .btn-apply:hover { background:#357abd; }
-    .bg-filename { font-size:10px; color:#999; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   </style>
 </head>
 <body>
@@ -72,19 +62,13 @@
   <div class="captcha-box">
     <div class="captcha-header">
       <div class="select-label">Select all squares with</div>
-      <!-- ✏️ MODIFIER LA QUESTION ICI -->
-      <div class="main-label" id="main-label">traffic lights</div>
+      <div class="main-label" id="main-label"></div>
       <div class="sub-label">If there are none, click skip</div>
     </div>
-
     <div class="grid-container">
       <img id="bg-img" alt="" />
-      <div id="placeholder-bg">
-        <span style="color:#666;font-size:12px;">⚙ Configurez l'image ci-dessous</span>
-      </div>
       <div class="grid-overlay" id="grid-overlay"></div>
     </div>
-
     <div class="captcha-footer">
       <div class="footer-icons">
         <button class="icon-btn" onclick="resetSelection()" title="Réinitialiser">
@@ -99,42 +83,41 @@
       </div>
       <button class="verify-btn" onclick="verify()">VERIFY</button>
     </div>
-
-    <!-- PANNEAU CONFIGURATION -->
-    <div class="config-section">
-      <button class="config-toggle" onclick="toggleConfig()" id="cfg-toggle">▼ &nbsp;MODE CONFIGURATION</button>
-      <div class="config-inner" id="cfg-inner">
-        <div class="cfg-row">
-          <label>Question :</label>
-          <input type="text" id="cfg-label" value="traffic lights" placeholder="ex: traffic lights" />
-        </div>
-        <div class="cfg-row">
-          <label>Image :</label>
-          <input type="file" id="bg-upload" accept="image/*" onchange="loadBg(event)" />
-          <button class="upload-btn-sm" onclick="document.getElementById('bg-upload').click()">Choisir…</button>
-          <span class="bg-filename" id="bg-name">aucune</span>
-        </div>
-        <div class="cfg-row">
-          <label>Redirect :</label>
-          <!-- ✏️ MODIFIER LE LIEN DE REDIRECTION ICI -->
-          <input type="text" id="cfg-redirect" value="https://example.com" placeholder="https://..." />
-        </div>
-        <p class="cfg-hint">
-          Cliquez sur les cases pour définir les bonnes réponses (bordure bleue = correct).<br>
-          Cliquer joue aussi le son correspondant.
-        </p>
-        <div class="admin-grid" id="admin-grid"></div>
-        <button class="btn-apply" onclick="applyConfig()">✓ Appliquer</button>
-      </div>
-    </div>
   </div>
 
   <div id="msg-box"></div>
 
   <script>
-    // =============================================
-    // 🎵 SONS — un par case (synthèse Web Audio)
-    // =============================================
+
+    // ================================================================
+    // ✏️  CONFIGURATION — MODIFIE UNIQUEMENT CETTE SECTION
+    // ================================================================
+
+    const QUESTION = "Chose the right 4th Anniversary Line Up";
+    // La question affichée en gros dans le bandeau bleu.
+
+    const IMAGE_URL = "4thanniversaryphoto.png";
+    // Nom de l'image uploadée dans ton dépôt GitHub (même dossier).
+    // Ex : "photo.jpg"  ou  "https://monsite.com/image.jpg"
+
+    const CORRECT_CELLS = [2, 5, 9, 13];
+    // Numéros des cases qui sont les BONNES réponses (entre 1 et 16).
+    // Les cases sont numérotées ainsi :
+    //
+    //  [ 1] [ 2] [ 3] [ 4]
+    //  [ 5] [ 6] [ 7] [ 8]
+    //  [ 9] [10] [11] [12]
+    //  [13] [14] [15] [16]
+
+    const REDIRECT_URL = "https://shotgun.live/fr/events/halfpiperecords-4th-anniversary-virage-paris";
+    // Lien de redirection si l'utilisateur a la bonne réponse.
+
+    // ================================================================
+    // FIN DE LA CONFIGURATION — ne pas modifier en dessous
+    // ================================================================
+
+
+    // 🎵 SONS — un unique par case
     let actx = null;
     function ac() { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); return actx; }
 
@@ -152,148 +135,70 @@
     function playOhYeah()    { const c=ac(),t=c.currentTime,freqs=[220,196,220,262,220],times=[0,0.12,0.22,0.34,0.46]; freqs.forEach((freq,idx)=>{ const o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter(); o.type='sine';f.type='bandpass';f.frequency.value=freq;f.Q.value=8;o.frequency.setValueAtTime(freq,t+times[idx]);o.connect(f);f.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0,t+times[idx]);g.gain.linearRampToValueAtTime(0.4,t+times[idx]+0.04);g.gain.exponentialRampToValueAtTime(0.001,t+times[idx]+0.1);o.start(t+times[idx]);o.stop(t+times[idx]+0.12); }); }
     function playGuitar()    { const c=ac(),t=c.currentTime,freq=196,N2=Math.round(c.sampleRate/freq),buf=c.createBuffer(1,c.sampleRate*1.2,c.sampleRate),d=buf.getChannelData(0),ring=new Float32Array(N2); for(let i=0;i<N2;i++)ring[i]=Math.random()*2-1; for(let i=0;i<d.length;i++){const idx=i%N2,next=(idx+1)%N2;ring[idx]=(ring[idx]+ring[next])*0.498;d[i]=ring[idx];} const src=c.createBufferSource(),g=c.createGain(); src.buffer=buf;src.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+1.2);src.start(t);src.stop(t+1.2); }
     function playBass()      { const c=ac(),t=c.currentTime,o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter(); o.type='sawtooth';f.type='lowpass';f.frequency.value=300;o.connect(f);f.connect(g);g.connect(c.destination);o.frequency.setValueAtTime(80,t);o.frequency.exponentialRampToValueAtTime(60,t+0.5);g.gain.setValueAtTime(0.8,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.6);o.start(t);o.stop(t+0.6); }
-    function playPiano()     { const c=ac(),t=c.currentTime,notes=[261.63,329.63,392.00]; notes.forEach(freq=>{ const o=c.createOscillator(),g=c.createGain(); o.type='triangle';o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.4,t);g.gain.exponentialRampToValueAtTime(0.001,t+1.0);o.start(t);o.stop(t+1.0); }); }
+    function playPiano()     { const c=ac(),t=c.currentTime; [261.63,329.63,392.00].forEach(freq=>{ const o=c.createOscillator(),g=c.createGain(); o.type='triangle';o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.4,t);g.gain.exponentialRampToValueAtTime(0.001,t+1.0);o.start(t);o.stop(t+1.0); }); }
     function playSnap()      { const c=ac(),t=c.currentTime,buf=c.createBuffer(1,c.sampleRate*0.04,c.sampleRate),d=buf.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3); const src=c.createBufferSource(),g=c.createGain(),f=c.createBiquadFilter(); f.type='bandpass';f.frequency.value=2000;f.Q.value=1.5;src.buffer=buf;src.connect(f);f.connect(g);g.connect(c.destination);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.04);src.start(t);src.stop(t+0.04); }
 
-    // =============================================
-    // 🥁 LISTE DES 16 SONS (1 par case)
-    // ✏️ Vous pouvez changer l'ordre ou les couleurs
-    // =============================================
+    // Sons dans l'ordre des cases 1 → 16
     const SOUNDS = [
-      { name:'Kick',        color:'#e74c3c', fn:playKick },
-      { name:'Snare',       color:'#e67e22', fn:playSnare },
-      { name:'Hihat',       color:'#c9a800', fn:playHihat },
-      { name:'Clap',        color:'#27ae60', fn:playClap },
-      { name:'Tom High',    color:'#1abc9c', fn:playTomHigh },
-      { name:'Tom Low',     color:'#16a085', fn:playTomLow },
-      { name:'Ride',        color:'#2980b9', fn:playRide },
-      { name:'Crash',       color:'#8e44ad', fn:playCrash },
-      { name:'Rim',         color:'#c0392b', fn:playRim },
-      { name:'Siren',       color:'#e91e63', fn:playSiren },
-      { name:'White Noise', color:'#7f8c8d', fn:playWhiteNoise },
-      { name:'Oh Yeah',     color:'#f39c12', fn:playOhYeah },
-      { name:'Guitar',      color:'#6d4c41', fn:playGuitar },
-      { name:'Bass',        color:'#1565c0', fn:playBass },
-      { name:'Piano',       color:'#4a148c', fn:playPiano },
-      { name:'Snap',        color:'#00897b', fn:playSnap },
+      playKick, playSnare, playHihat,     playClap,
+      playTomHigh, playTomLow, playRide,  playCrash,
+      playRim, playSiren, playWhiteNoise, playOhYeah,
+      playGuitar, playBass, playPiano,    playSnap,
     ];
 
-    // =============================================
-    // ⚙️ LOGIQUE CAPTCHA
-    // =============================================
-    const N = 16;
-    let correctCells = new Set();
+    // Init
+    const correctSet = new Set(CORRECT_CELLS.map(n => n - 1));
     let selectedCells = new Set();
-    let cfgOpen = false;
+    document.getElementById('main-label').textContent = QUESTION;
+    document.getElementById('bg-img').src = IMAGE_URL;
 
-    function buildGrid() {
-      const overlay = document.getElementById('grid-overlay');
-      overlay.innerHTML = '';
-      for (let i = 0; i < N; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'grid-cell';
-        cell.dataset.i = i;
-        const chk = document.createElement('div');
-        chk.className = 'checkmark';
-        chk.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
-        cell.appendChild(chk);
-        cell.onclick = () => toggleCell(i, cell);
-        overlay.appendChild(cell);
-      }
-    }
-
-    function buildAdminGrid() {
-      const grid = document.getElementById('admin-grid');
-      grid.innerHTML = '';
-      for (let i = 0; i < N; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'admin-cell' + (correctCells.has(i) ? ' correct' : '');
-        const badge = document.createElement('div');
-        badge.className = 'c-badge'; badge.textContent = '✓';
-        cell.appendChild(badge);
-        const dn = document.createElement('div');
-        dn.className = 'adm-name'; dn.style.color = SOUNDS[i].color; dn.textContent = SOUNDS[i].name;
-        cell.appendChild(dn);
-        const num = document.createElement('div');
-        num.className = 'adm-num'; num.textContent = i + 1;
-        cell.appendChild(num);
-        cell.onclick = () => { SOUNDS[i].fn(); toggleCorrect(i); };
-        grid.appendChild(cell);
-      }
-    }
-
-    function toggleCell(i, cellEl) {
-      if (selectedCells.has(i)) selectedCells.delete(i);
-      else selectedCells.add(i);
-      SOUNDS[i].fn();
-      cellEl.classList.add('flash');
-      setTimeout(() => cellEl.classList.remove('flash'), 80);
-      syncCells();
+    // Grille
+    const overlay = document.getElementById('grid-overlay');
+    for (let i = 0; i < 16; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      cell.innerHTML = '<div class="checkmark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+      cell.onclick = () => {
+        if (selectedCells.has(i)) selectedCells.delete(i);
+        else selectedCells.add(i);
+        SOUNDS[i]();
+        cell.classList.add('flash');
+        setTimeout(() => cell.classList.remove('flash'), 80);
+        syncCells();
+      };
+      overlay.appendChild(cell);
     }
 
     function syncCells() {
-      document.querySelectorAll('.grid-cell').forEach(cell => {
-        cell.classList.toggle('selected', selectedCells.has(+cell.dataset.i));
+      document.querySelectorAll('.grid-cell').forEach((cell, i) => {
+        cell.classList.toggle('selected', selectedCells.has(i));
       });
     }
 
-    function toggleCorrect(i) {
-      if (correctCells.has(i)) correctCells.delete(i);
-      else correctCells.add(i);
-      buildAdminGrid();
-    }
-
     function resetSelection() {
-      selectedCells.clear(); syncCells();
+      selectedCells.clear();
+      syncCells();
       document.getElementById('msg-box').style.display = 'none';
-    }
-
-    function loadBg(e) {
-      const file = e.target.files[0]; if (!file) return;
-      document.getElementById('bg-name').textContent = file.name;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = document.getElementById('bg-img');
-        img.src = ev.target.result; img.style.display = 'block';
-        document.getElementById('placeholder-bg').style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function toggleConfig() {
-      cfgOpen = !cfgOpen;
-      document.getElementById('cfg-inner').className = 'config-inner' + (cfgOpen ? ' open' : '');
-      document.getElementById('cfg-toggle').textContent = (cfgOpen ? '▲' : '▼') + '  MODE CONFIGURATION';
-    }
-
-    function applyConfig() {
-      const lbl = document.getElementById('cfg-label').value.trim();
-      if (lbl) document.getElementById('main-label').textContent = lbl;
-      cfgOpen = false;
-      document.getElementById('cfg-inner').className = 'config-inner';
-      document.getElementById('cfg-toggle').textContent = '▼  MODE CONFIGURATION';
     }
 
     function verify() {
       const msg = document.getElementById('msg-box');
-      if (correctCells.size === 0) {
-        msg.className = 'error'; msg.textContent = 'Aucune bonne réponse configurée.'; msg.style.display = 'block'; return;
-      }
-      const ok = [...correctCells].every(i => selectedCells.has(i)) && [...selectedCells].every(i => correctCells.has(i));
+      const ok = correctSet.size === selectedCells.size &&
+                 [...correctSet].every(i => selectedCells.has(i));
       if (ok) {
-        msg.className = 'success'; msg.textContent = '✓ Correct ! Redirection en cours...'; msg.style.display = 'block';
-        // ✏️ OU MODIFIER LE LIEN ICI DIRECTEMENT :
-        // const url = 'https://ton-site.com';
-        const url = document.getElementById('cfg-redirect').value.trim();
-        if (url && url.startsWith('http')) setTimeout(() => window.location.href = url, 1500);
+        msg.className = 'success';
+        msg.textContent = '✓ Correct ! Redirection en cours...';
+        msg.style.display = 'block';
+        setTimeout(() => window.location.href = REDIRECT_URL, 1500);
       } else {
-        msg.className = 'error'; msg.textContent = 'Sélection incorrecte. Réessayez.'; msg.style.display = 'block';
-        selectedCells.clear(); syncCells();
+        msg.className = 'error';
+        msg.textContent = 'Sélection incorrecte. Réessayez.';
+        msg.style.display = 'block';
+        selectedCells.clear();
+        syncCells();
       }
     }
 
-    buildGrid();
-    buildAdminGrid();
   </script>
 </body>
 </html>
