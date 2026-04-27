@@ -138,6 +138,34 @@
     function playPiano()     { const c=ac(),t=c.currentTime; [261.63,329.63,392.00].forEach(freq=>{ const o=c.createOscillator(),g=c.createGain(); o.type='triangle';o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.4,t);g.gain.exponentialRampToValueAtTime(0.001,t+1.0);o.start(t);o.stop(t+1.0); }); }
     function playSnap()      { const c=ac(),t=c.currentTime,buf=c.createBuffer(1,c.sampleRate*0.04,c.sampleRate),d=buf.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3); const src=c.createBufferSource(),g=c.createGain(),f=c.createBiquadFilter(); f.type='bandpass';f.frequency.value=2000;f.Q.value=1.5;src.buffer=buf;src.connect(f);f.connect(g);g.connect(c.destination);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.04);src.start(t);src.stop(t+0.04); }
 
+    // 🎉 Son succès — petite mélodie montante
+function playSuccess() {
+  const c = ac(), t = c.currentTime;
+  [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    o.connect(g); g.connect(c.destination);
+    const st = t + i * 0.12;
+    g.gain.setValueAtTime(0, st);
+    g.gain.linearRampToValueAtTime(0.5, st + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
+    o.start(st); o.stop(st + 0.25);
+  });
+}
+
+    // ❌ Son erreur — buzzer descendant
+    function playError() {
+      const c = ac(), t = c.currentTime;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'sawtooth';
+      o.connect(g); g.connect(c.destination);
+      o.frequency.setValueAtTime(300, t);
+      o.frequency.linearRampToValueAtTime(80, t + 0.4);
+      g.gain.setValueAtTime(0.6, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      o.start(t); o.stop(t + 0.4);
+    }
+
     // Sons dans l'ordre des cases 1 → 16
     const SOUNDS = [
       playKick, playSnare, playHihat,     playClap,
@@ -186,11 +214,13 @@
       const ok = correctSet.size === selectedCells.size &&
                  [...correctSet].every(i => selectedCells.has(i));
       if (ok) {
+        playSuccess();
         msg.className = 'success';
         msg.textContent = '✓ Correct ! Redirection en cours...';
         msg.style.display = 'block';
         setTimeout(() => window.location.href = REDIRECT_URL, 1500);
       } else {
+        playError();
         msg.className = 'error';
         msg.textContent = 'Sélection incorrecte. Réessayez.';
         msg.style.display = 'block';
