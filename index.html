@@ -55,6 +55,12 @@
     #msg-box { width:320px; margin-top:6px; padding:10px 14px; border-radius:4px; font-size:13px; display:none; }
     #msg-box.success { background:#e6f4ea; color:#1e7e34; border:1px solid #93d6a2; }
     #msg-box.error { background:#fce8e6; color:#c5221f; border:1px solid #f5a9a7; }
+    .grid-cell.wrong {
+  background: rgba(220, 50, 50, 0.6) !important;
+}
+.grid-cell.wrong::after {
+  border-color: #cc0000 !important;
+}
   </style>
 </head>
 <body>
@@ -224,9 +230,18 @@ function playSuccess() {
         msg.className = 'error';
         msg.textContent = 'Sélection incorrecte. Réessayez.';
         msg.style.display = 'block';
-        selectedCells.clear();
-        syncCells();
-      }
+        // Flash rouge sur les cases sélectionnées
+        document.querySelectorAll('.grid-cell.selected').forEach(cell => {
+          cell.classList.add('wrong');
+        });
+        setTimeout(() => {
+          selectedCells.clear();
+          syncCells();
+          document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.classList.remove('wrong');
+          });
+        }, 800);
+      }      
     }
 
   </script>
