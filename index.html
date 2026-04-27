@@ -74,6 +74,33 @@
   .captcha-box.shake {
     animation: shake 0.5s ease;
   }
+
+      @keyframes confetti-fall {
+        0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(340px) rotate(720deg); opacity: 0; }
+      }
+      .confetti {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        animation: confetti-fall 1.2s ease-in forwards;
+        pointer-events: none;
+        z-index: 10;
+      }
+      @keyframes shine {
+        0%   { background: rgba(74,144,217,0.45); }
+        50%  { background: rgba(50,200,100,0.7); }
+        100% { background: rgba(50,200,100,0.5); }
+      }
+      .grid-cell.correct-flash {
+        background: rgba(50,200,100,0.5) !important;
+        animation: shine 0.6s ease forwards;
+      }
+      .grid-cell.correct-flash::after {
+        border-color: #1e7e34 !important;
+      }
+    
   </style>
 </head>
 <body>
@@ -232,13 +259,37 @@ function playSuccess() {
       const msg = document.getElementById('msg-box');
       const ok = correctSet.size === selectedCells.size &&
                  [...correctSet].every(i => selectedCells.has(i));
-      if (ok) {
-        playSuccess();
-        msg.className = 'success';
-        msg.textContent = '✓ Correct ! Redirection en cours...';
-        msg.style.display = 'block';
-        setTimeout(() => window.location.href = REDIRECT_URL, 1500);
-      } else {
+    if (ok) {
+  playSuccess();
+
+  // Cases vertes
+  document.querySelectorAll('.grid-cell.selected').forEach(cell => {
+    cell.classList.add('correct-flash');
+  });
+
+  // Confettis
+  const colors = ['#4a90d9','#2ecc71','#e74c3c','#f1c40f','#9b59b6','#e67e22'];
+  const container = document.querySelector('.grid-container');
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 320 + 'px';
+    c.style.top = '-10px';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 0.6 + 's';
+    c.style.width = (6 + Math.random() * 6) + 'px';
+    c.style.height = (6 + Math.random() * 6) + 'px';
+    container.appendChild(c);
+    setTimeout(() => c.remove(), 2000);
+  }
+
+  msg.className = 'success';
+  msg.textContent = '✓ Correct ! Redirection en cours...';
+  msg.style.display = 'block';
+  setTimeout(() => window.location.href = REDIRECT_URL, 1500);
+      }
+
+      else {
         playError();
         const box = document.querySelector('.captcha-box');
         box.classList.add('shake');
